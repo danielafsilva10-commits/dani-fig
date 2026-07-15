@@ -1,1 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Guia Visual de Redes para Automação</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      margin: 0;
+      background: #f4f6f9;
+      color: #333;
+    }
+    header {
+      background: #004080;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.8em;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      background: #e0e0e0;
+    }
+    .tab {
+      padding: 15px 30px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .tab.active {
+      background: #004080;
+      color: white;
+      border-radius: 5px 5px 0 0;
+    }
+    .content {
+      display: none;
+      padding: 30px;
+      animation: fadeIn 0.5s;
+    }
+    .content.active { display: block; }
+    @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+
+    /* Cards */
+    .cards {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
+    .card {
+      background: white;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      width: 250px;
+      margin: 15px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      border-color: #004080;
+    }
+    .card h3 { margin-bottom: 10px; color: #004080; }
+    .card p { font-size: 0.9em; color: #555; }
+
+    /* Botões Topologias */
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+    .button {
+      background: #004080;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+    .button:hover { background: #ff6600; }
+
+    /* Caixa explicação */
+    .box {
+      background: #fff;
+      border-left: 5px solid #004080;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+    .box h3 { margin-top: 0; color: #004080; }
+    ul { list-style: none; padding: 0; }
+    ul li::before { content: "✔ "; color: green; }
+    ul li.neg::before { content: "✖ "; color: red; }
+  </style>
+</head>
+<body>
+  <header>Guia Visual de Redes para Automação</header>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('cabos')">Cabos Industriais</div>
+    <div class="tab" onclick="showTab('topologias')">Topologias</div>
+  </div>
+
+  <!-- Cabos Industriais -->
+  <div id="cabos" class="content active">
+    <div class="cards">
+      <div class="card" onclick="showInfo('Par Trançado','Usado para sensores e controladores próximos. É barato e fácil de instalar, mas não funciona bem em longas distâncias.')">
+        <h3>Par Trançado</h3>
+        <p>Cabo simples e econômico</p>
+      </div>
+      <div class="card" onclick="showInfo('Fibra Óptica','Ideal para interligar setores distantes da fábrica. Tem alta velocidade e imunidade a interferências.')">
+        <h3>Fibra Óptica</h3>
+        <p>Alta velocidade e alcance</p>
+      </div>
+      <div class="card" onclick="showInfo('Wireless','Usado em locais onde passar cabos é difícil. Bom para sensores móveis ou áreas com muita movimentação.')">
+        <h3>Wireless</h3>
+        <p>Conexão sem fio</p>
+      </div>
+    </div>
+    <div id="infoBox" class="box" style="display:none;"></div>
+  </div>
+
+  <!-- Topologias -->
+  <div id="topologias" class="content">
+    <div class="buttons">
+      <div class="button" onclick="showTopo('Estrela')">Layout em Estrela</div>
+      <div class="button" onclick="showTopo('Barramento')">Layout em Barramento</div>
+    </div>
+    <div id="topoBox" class="box" style="display:none;"></div>
+  </div>
+
+  <script>
+    function showTab(tab) {
+      document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+      document.getElementById(tab).classList.add('active');
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
+    function showInfo(title, text) {
+      const box = document.getElementById('infoBox');
+      box.style.display = 'block';
+      box.innerHTML = `<h3>${title}</h3><p>${text}</p>`;
+    }
+
+    function showTopo(type) {
+      const box = document.getElementById('topoBox');
+      box.style.display = 'block';
+      if(type === 'Estrela') {
+        box.innerHTML = `
+          <h3>Layout em Estrela</h3>
+          <p>Todas as máquinas se conectam a um ponto central (switch/controlador).</p>
+          <ul>
+            <li>Fácil de identificar falhas</li>
+            <li>Expansão simples</li>
+            <li class="neg">Dependência do ponto central</li>
+          </ul>`;
+      } else {
+        box.innerHTML = `
+          <h3>Layout em Barramento</h3>
+          <p>Todas as máquinas compartilham o mesmo cabo principal.</p>
+          <ul>
+            <li>Instalação barata</li>
+            <li>Menos cabos necessários</li>
+            <li class="neg">Difícil localizar falhas</li>
+            <li class="neg">Se o cabo principal quebrar, toda a rede cai</li>
+          </ul>`;
+      }
+    }
+  </script>
+</body>
+</html>
 
